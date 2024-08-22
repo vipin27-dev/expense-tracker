@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,10 +28,26 @@
         <div class="mt-3">
             <button id="signup-button" class="btn btn-secondary" onclick="window.location.href='/signup';">Sign Up</button>
         </div>
+        <div class="mt-3">
+            <button id="forgot-password-btn" class="btn btn-link">Forgot Password?</button>
+        </div>
+        <!-- Forgot Password Form -->
+        <div id="forgot-password-section" style="display: none; margin-top: 20px;">
+            <h3>Forgot Password</h3>
+            <form id="forgot-password-form">
+                <div class="mb-3">
+                    <label for="forgot-email" class="form-label">Enter your email:</label>
+                    <input type="email" class="form-control" id="forgot-email" name="email" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.4/axios.min.js"></script>
     <script src="/login.js"></script>
+    <script src="/forgotpassword.js"></script>
 </body>
 
 </html>

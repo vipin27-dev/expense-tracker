@@ -3,6 +3,7 @@ const express = require("express");
 const userController = require("../controllers/userController");
 const expenseController = require("../controllers/expense"); 
 const premiumController = require("../controllers/premiumController"); 
+const passwordController = require('../controllers/passwordController');
 const authMiddleWare = require('../middleWare/auth');
 const router = express.Router();
 
@@ -28,7 +29,7 @@ router.put("/add-expense/:id", authMiddleWare, (req, res) => {
   expenseController.updateExpense(req, res);
 });
 
-router.delete("/add-expense/:id", authMiddleWare, (req, res) => {
+router.delete("/add-expense/:id", (req, res) => {
   expenseController.deleteExpense(req, res);
 });
 
@@ -47,5 +48,9 @@ router.get("/premium-status", authMiddleWare,(req,res)=>{
 })
 router.get("/leaderboard",authMiddleWare,(req,res)=>{
   premiumController.getLeaderboard(req,res);
+})
+
+router.post('/password/forgotpassword',(req,res)=>{
+  passwordController.forgotPassword(req,res);
 })
 module.exports = router;

@@ -33,19 +33,19 @@ app.get('/premiumuser.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'premiumUser.html'));
 });
 
-// Handle 404 errors
+
 app.use((req, res, next) => {
   res.status(404).send('Page Not Found');
 });
 
-// Generic error-handling middleware
+
 app.use((err, req, res, next) => {
-  console.error('Unexpected error:', err); // Log error details
+  console.error('Unexpected error:', err); 
   res.status(500).send('Something went wrong!');
 });
 
-// Synchronize database and start server
-sequelize.sync({ alter: true })  // Use `alter: true` for development
+
+sequelize.sync({ alter: true })  
   .then(() => {
     console.log('Database synchronized successfully.');
     app.listen(process.env.PORT || 4000, () => {
