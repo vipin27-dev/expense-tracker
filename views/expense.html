@@ -44,15 +44,29 @@
     </div>
 
     <div class="list">
-        <h6 class="h6">Your expenses are: </h6>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h6 class="h6">Your expenses are: </h6>
+            <div class="filter-section" style="margin-bottom: 20px;">
+                <label for="filter-expensetype">Filter by Expense Type:</label>
+                <select class="form-select" id="filter-expensetype">
+                    <option value="All">All</option>
+                    <option value="Movie">Movie</option>
+                    <option value="Fuel">Fuel</option>
+                    <option value="Rent">Rent</option>
+                    <option value="Gym">Gym</option>
+                    <option value="Groceries">Groceries</option>
+                </select>
+            </div>
+        </div>
         <ul id="ul"></ul>
+        <div id="pagination"></div> 
     </div>
 
     <!-- Add the Buy Premium Membership Button and Razorpay Script Here -->
     <div class="premium-section" style="text-align:right; margin: 20px 0;">
         <button id="buy-premium-btn" class="btn btn-outline-dark btn-lg">
             <i class="fas fa-money-bill"></i> Buy Premium Membership
-          </button>
+        </button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.4/axios.min.js"></script>
@@ -60,8 +74,6 @@
     <script src="/expense.js"></script>
     <script src="/premium.js"></script>
    
-
-    
 </body>
 
 </html>

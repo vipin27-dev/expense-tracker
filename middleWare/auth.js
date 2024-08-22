@@ -4,7 +4,7 @@ const User = require('../model/user');
 const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-
+  console.log('Received Token:', token);
   if (token == null) {
     console.error('Token is missing');
     return res.sendStatus(401); // Unauthorized

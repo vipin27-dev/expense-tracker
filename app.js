@@ -7,6 +7,7 @@ const sequelize = require("./util/database");
 const userRoutes = require("./routes/route");
 
 const app = express();
+console.log('JWT Secret:', process.env.JWT_SECRET);
 
 // Middleware setup
 app.use(bodyParser.json());
@@ -25,7 +26,7 @@ app.get('/signup', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'signup.html'));
 });
 
-app.get('/add-expense-page', (req, res) => {
+app.get('/add-expense', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'expense.html'));
 });
 

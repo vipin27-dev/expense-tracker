@@ -19,14 +19,25 @@ exports.getAllExpenses = async (req, res) => {
     return res.status(400).json({ message: "User ID is missing" });
   }
 
+  const page = parseInt(req.query.page, 10) || 1; 
+  const limit = parseInt(req.query.limit, 10) || 10; 
+  const offset = (page - 1) * limit;
+
   try {
-    const expenses = await Expense.findAll({ where: { userId } });
+    const { count, rows: expenses } = await Expense.findAndCountAll({
+      where: { userId },
+      limit,
+      offset,
+    });
 
-    if (!expenses || expenses.length === 0) {
-      return res.status(404).json({ message: "No expenses found" });
-    }
+    const totalPages = Math.ceil(count / limit);
 
-    res.status(200).json(expenses);
+    res.status(200).json({
+      currentPage: page,
+      totalPages,
+      totalExpenses: count,
+      expenses
+    });
   } catch (error) {
     console.error("Error fetching expenses:", error.message);
     res.status(500).json({ message: "An error occurred while fetching expenses." });
