@@ -25,7 +25,7 @@ app.get('/signup', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'signup.html'));
 });
 
-app.get('/add-expense', (req, res) => {
+app.get('/add-expense-page', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'expense.html'));
 });
 

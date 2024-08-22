@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (buyPremiumBtn) {
     buyPremiumBtn.addEventListener("click", () => {
       axios.post("http://localhost:4000/api/purchase/premium", {}, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } // Corrected the string interpolation
       })
       .then(response => {
         const { order, key_id } = response.data; // Destructure order and key_id from response data
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 payment_id: response.razorpay_payment_id,
                 status: "SUCCESSFUL"
               }, {
-                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } // Corrected the string interpolation
               });
               alert("Transaction Successful!");
 

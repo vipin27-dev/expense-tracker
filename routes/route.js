@@ -53,4 +53,8 @@ router.get("/leaderboard",authMiddleWare,(req,res)=>{
 router.post('/password/forgotpassword',(req,res)=>{
   passwordController.forgotPassword(req,res);
 })
+
+router.get('api/download-expenses',authMiddleWare,(req,res)=>{
+  expenseController.downloadExpenses(req,res);
+})
 module.exports = router;

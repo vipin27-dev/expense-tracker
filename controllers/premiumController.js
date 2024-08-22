@@ -12,7 +12,7 @@ const razorpay = new Razorpay({
 
 // Create order
 exports.createOrder = async (req, res) => {
-  const transaction = await sequelize.transaction(); // Start a transaction
+  const transaction = await sequelize.transaction(); 
 
   try {
     const amount = 50000; 
