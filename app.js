@@ -7,11 +7,26 @@ const sequelize = require("./util/database");
 const userRoutes = require("./routes/route");
 const helmet = require('helmet');
 const logger = require('./util/logger');
+
 const app = express();
+
+// Log the JWT Secret (ensure not to log sensitive information in production)
 console.log('JWT Secret:', process.env.JWT_SECRET);
 
 // Middleware setup
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://checkout.razorpay.com"],
+      styleSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+      frameSrc: ["'self'", "https://api.razorpay.com"], // Allow framing from Razorpay
+      // Add other directives as needed
+    }
+  })
+);
+
+// Middleware setup
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -22,7 +37,7 @@ app.use('/api', userRoutes);
 // Serve HTML files
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'login.html'));
-  logger.info('Root route accessed')
+  logger.info('Root route accessed');
 });
 
 app.get('/signup', (req, res) => {
@@ -37,20 +52,20 @@ app.get('/premiumuser.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'premiumUser.html'));
 });
 
-
+// Error handling middleware
 app.use((req, res, next) => {
-  logger.error(err.message, err);
   res.status(404).send('Page Not Found');
+  logger.error('404 Page Not Found: ' + req.originalUrl);
 });
 
-
 app.use((err, req, res, next) => {
-  console.error('Unexpected error:', err); 
+  console.error('Unexpected error:', err);
+  logger.error('500 Internal Server Error: ' + err.message);
   res.status(500).send('Something went wrong!');
 });
 
-
-sequelize.sync({ alter: true })  
+// Synchronize database and start server
+sequelize.sync({ alter: true })
   .then(() => {
     console.log('Database synchronized successfully.');
     app.listen(process.env.PORT || 4000, () => {

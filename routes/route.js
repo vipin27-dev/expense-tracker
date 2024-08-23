@@ -54,7 +54,9 @@ router.post('/password/forgotpassword',(req,res)=>{
   passwordController.forgotPassword(req,res);
 })
 
-router.get('/api/download-expenses',authMiddleWare,(req,res)=>{
-  expenseController.downloadExpenses(req,res);
-})
+router.get('/download-expenses',authMiddleWare, (req, res) => {
+  console.log('Request received for /api/download-expenses', req.userID);
+  expenseController.downloadExpenses(req, res);
+});
+
 module.exports = router;

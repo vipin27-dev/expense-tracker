@@ -20,6 +20,10 @@ const Expense = sequelize.define('expenses', {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  date: { 
+    type: Sequelize.DATE, 
+    allowNull: true, 
+  },
   userId: { // Adding the userId field
     type: Sequelize.INTEGER,
     allowNull: false,

@@ -1,5 +1,6 @@
 let currentPage = 1; // Initialize current page
-const limit = 10; // Set the number of items per page (adjust based on screen size or user preference)
+const limit = 10; // Set the number of items per page
+
 document.addEventListener("DOMContentLoaded", () => {
   const expenseForm = document.querySelector("#expense-form");
   const token = localStorage.getItem("token");
@@ -19,12 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
     expenseForm.addEventListener("submit", handleFormSubmit);
   }
 
-  // Event listener for the filter dropdown
   if (filterDropdown) {
     filterDropdown.addEventListener("change", handleFilterChange);
   }
 
-  // Function to handle form submission
   function handleFormSubmit(event) {
     event.preventDefault();
 
@@ -39,89 +38,90 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const expense = { amount, description, type };
 
-    axios
-      .post("http://localhost:4000/api/add-expense", expense, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        addExpenseToUI(response.data);
-        expenseForm.reset();
-      })
-      .catch((error) => {
-        console.error("Error adding expense:", error);
-        alert("An error occurred while adding the expense.");
-      });
+    axios.post("http://localhost:4000/api/add-expense", expense, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      addExpenseToUI(response.data);
+      expenseForm.reset();
+    })
+    .catch((error) => {
+      console.error("Error adding expense:", error.response ? error.response.data : error.message);
+      alert("An error occurred while adding the expense.");
+    });
   }
 
-  // Function to fetch and display expenses
- 
-  
   function fetchAndDisplayExpenses(page = currentPage) {
-    axios
-      .get(`http://localhost:4000/api/add-expense?page=${page}&limit=${limit}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        const { expenses, totalPages } = response.data;
-        if (totalPages === undefined) {
-          console.error("Total pages are undefined");
-          return;
-        }
-        
-        const selectedType = filterDropdown.value;
-        const filteredExpenses = selectedType === "All"
-          ? expenses
-          : expenses.filter((expense) => expense.type === selectedType);
-  
-        document.getElementById("ul").innerHTML = "";
-        filteredExpenses.forEach((expense) => addExpenseToUI(expense));
-  
-        setupPagination(page, totalPages);
-      })
-      .catch((error) => {
-        console.error("Error fetching expenses:", error);
-        alert("An error occurred while fetching expenses.");
-      });
+    axios.get(`http://localhost:4000/api/add-expense?page=${page}&limit=${limit}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      const { expenses, totalPages } = response.data;
+      if (totalPages === undefined) {
+        console.error("Total pages are undefined");
+        return;
+      }
+
+      const selectedType = filterDropdown.value;
+      const filteredExpenses = selectedType === "All"
+        ? expenses
+        : expenses.filter((expense) => expense.type === selectedType);
+
+      document.getElementById("ul").innerHTML = "";
+      filteredExpenses.forEach((expense) => addExpenseToUI(expense));
+
+      setupPagination(page, totalPages);
+    })
+    .catch((error) => {
+      console.error("Error fetching expenses:", error.response ? error.response.data : error.message);
+      alert("An error occurred while fetching expenses.");
+    });
   }
-  
+
   function setupPagination(currentPage, totalPages) {
     const paginationContainer = document.getElementById("pagination");
-  
-    paginationContainer.innerHTML = ""; // Clear previous pagination controls
-  
+
+    paginationContainer.innerHTML = "";
+
     if (totalPages > 1) {
-      // Create Previous button
       if (currentPage > 1) {
         const prevButton = document.createElement("button");
         prevButton.textContent = "Previous";
-        prevButton.addEventListener("click", () => fetchAndDisplayExpenses(currentPage - 1));
+        prevButton.addEventListener("click", () => {
+          currentPage--;
+          fetchAndDisplayExpenses(currentPage);
+        });
         paginationContainer.appendChild(prevButton);
       }
-  
-      // Create page number buttons
+
       for (let i = 1; i <= totalPages; i++) {
         const pageButton = document.createElement("button");
         pageButton.textContent = i;
-        pageButton.disabled = i === currentPage; // Disable the current page button
-        pageButton.addEventListener("click", () => fetchAndDisplayExpenses(i));
+        pageButton.disabled = i === currentPage;
+        pageButton.addEventListener("click", () => {
+          currentPage = i;
+          fetchAndDisplayExpenses(currentPage);
+        });
         paginationContainer.appendChild(pageButton);
       }
-  
-      // Create Next button
+
       if (currentPage < totalPages) {
         const nextButton = document.createElement("button");
         nextButton.textContent = "Next";
-        nextButton.addEventListener("click", () => fetchAndDisplayExpenses(currentPage + 1));
+        nextButton.addEventListener("click", () => {
+          currentPage++;
+          fetchAndDisplayExpenses(currentPage);
+        });
         paginationContainer.appendChild(nextButton);
       }
     }
   }
-    // Function to handle filter change
+
   function handleFilterChange() {
+    currentPage = 1; // Reset to first page on filter change
     fetchAndDisplayExpenses();
   }
 
-  // Function to add an expense to the UI
   function addExpenseToUI(expense) {
     const ul = document.getElementById("ul");
     const li = document.createElement("li");
@@ -136,28 +136,25 @@ document.addEventListener("DOMContentLoaded", () => {
     ul.appendChild(li);
   }
 
-  // Function to create a delete button for an expense
   function createDeleteButton(id, li) {
     const deleteBtn = document.createElement("button");
     deleteBtn.className = "btn btn-danger";
     deleteBtn.innerText = "Delete";
     deleteBtn.onclick = function () {
-      axios
-        .delete(`http://localhost:4000/api/add-expense/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then(() => {
-          li.remove();
-        })
-        .catch((err) => {
-          console.error("Error deleting expense:", err);
-          alert("An error occurred while deleting the expense.");
-        });
+      axios.delete(`http://localhost:4000/api/add-expense/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(() => {
+        li.remove();
+      })
+      .catch((err) => {
+        console.error("Error deleting expense:", err.response ? err.response.data : err.message);
+        alert("An error occurred while deleting the expense.");
+      });
     };
     return deleteBtn;
   }
 
-  // Function to create an edit button for an expense
   function createEditButton(expense, li) {
     const editBtn = document.createElement("button");
     editBtn.className = "btn btn-light";
@@ -187,19 +184,18 @@ document.addEventListener("DOMContentLoaded", () => {
           type: editForm.type.value,
         };
 
-        axios
-          .put(`http://localhost:4000/api/add-expense/${expense.id}`, updatedExpense, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then(() => {
-            li.innerHTML = `${updatedExpense.amount} - ${updatedExpense.description} - ${updatedExpense.type}`;
-            li.appendChild(createDeleteButton(expense.id, li));
-            li.appendChild(createEditButton(updatedExpense, li));
-          })
-          .catch((err) => {
-            console.error("Error updating expense:", err);
-            alert("An error occurred while updating the expense.");
-          });
+        axios.put(`http://localhost:4000/api/add-expense/${expense.id}`, updatedExpense, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(() => {
+          li.innerHTML = `${updatedExpense.amount} - ${updatedExpense.description} - ${updatedExpense.type}`;
+          li.appendChild(createDeleteButton(expense.id, li));
+          li.appendChild(createEditButton(updatedExpense, li));
+        })
+        .catch((err) => {
+          console.error("Error updating expense:", err.response ? err.response.data : err.message);
+          alert("An error occurred while updating the expense.");
+        });
       };
 
       li.replaceWith(editForm);

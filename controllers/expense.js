@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 const { format } = require('date-fns');
 const sequelize = require('../util/database');
 const Expense = require('../model/expenseDetail');
-const stringify = require('csv-stringify');
+const {stringify} = require('csv-stringify');
 
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -45,6 +45,7 @@ exports.getAllExpenses = async (req, res) => {
 };
 
 exports.downloadExpenses = async (req, res) => {
+  console.log('Downloading expenses for user:', req.userId);
   const userId = req.userId;
 
   if (!userId) {

@@ -2,35 +2,32 @@ const jwt = require('jsonwebtoken');
 const User = require('../model/user');
 
 const authenticateToken = async (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  console.log('Received Token:', token);
-  if (token == null) {
-    console.error('Token is missing');
-    return res.sendStatus(401); // Unauthorized
-  }
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
-  jwt.verify(token, process.env.JWT_SECRET, async (err, user) => {
-    if (err) {
-      console.error('Token verification failed:', err.message);
-      return res.sendStatus(403); // Forbidden
+    if (token == null) {
+        return res.sendStatus(401); // Unauthorized
     }
 
-    try {
-      // Optionally, verify that the user exists in the database
-      const foundUser = await User.findByPk(user.userId);
-      if (!foundUser) {
-        console.error('User not found');
-        return res.sendStatus(403); // Forbidden
-      }
-      
-      req.userId = user.userId;
-      next();
-    } catch (dbError) {
-      console.error('Database error:', dbError.message);
-      return res.sendStatus(500); // Internal Server Error
-    }
-  });
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+        if (err) {
+            console.error('Token verification failed:', err.message);
+            return res.sendStatus(403); // Forbidden
+        }
+
+        try {
+            const foundUser = await User.findByPk(decoded.userId);
+            if (!foundUser) {
+                return res.sendStatus(403); // Forbidden
+            }
+
+            req.userId = decoded.userId; // Set userId if available
+            next();
+        } catch (dbError) {
+            console.error('Database error:', dbError.message);
+            return res.sendStatus(500); // Internal Server Error
+        }
+    });
 };
 
 module.exports = authenticateToken;
