@@ -5,11 +5,13 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const sequelize = require("./util/database");
 const userRoutes = require("./routes/route");
-
+const helmet = require('helmet');
+const logger = require('./util/logger');
 const app = express();
 console.log('JWT Secret:', process.env.JWT_SECRET);
 
 // Middleware setup
+app.use(helmet());
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -20,6 +22,7 @@ app.use('/api', userRoutes);
 // Serve HTML files
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'login.html'));
+  logger.info('Root route accessed')
 });
 
 app.get('/signup', (req, res) => {
@@ -36,6 +39,7 @@ app.get('/premiumuser.html', (req, res) => {
 
 
 app.use((req, res, next) => {
+  logger.error(err.message, err);
   res.status(404).send('Page Not Found');
 });
 
