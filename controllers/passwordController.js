@@ -1,10 +1,10 @@
 require('dotenv').config();
 const SibApiV3Sdk = require('sib-api-v3-sdk');
 
-// Configure Sendinblue
+
 const sendinblueClient = SibApiV3Sdk.ApiClient.instance;
 const apiKey = sendinblueClient.authentications['api-key'];
-apiKey.apiKey = process.env.SENDINBLUE_API_KEY; // Your Sendinblue API Key
+apiKey.apiKey = process.env.SENDINBLUE_API_KEY; 
 
 const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
