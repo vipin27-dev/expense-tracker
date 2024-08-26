@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
       expenses.forEach(expense => {
         const row = document.createElement('tr');
   
-        // Ensure that expense fields are correctly mapped
         const descriptionCell = document.createElement('td');
         descriptionCell.textContent = expense.description || 'N/A'; // Handle missing description
         row.appendChild(descriptionCell);

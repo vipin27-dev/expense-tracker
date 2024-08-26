@@ -17,4 +17,4 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Failed to send reset link.');
         }
     });
-});
+}); 

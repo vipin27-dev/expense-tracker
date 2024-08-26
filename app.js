@@ -10,7 +10,6 @@ const logger = require('./util/logger');
 
 const app = express();
 
-// Log the JWT Secret (ensure not to log sensitive information in production)
 console.log('JWT Secret:', process.env.JWT_SECRET);
 
 // Middleware setup
@@ -21,7 +20,6 @@ app.use(
       scriptSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://checkout.razorpay.com"],
       styleSrc: ["'self'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
       frameSrc: ["'self'", "https://api.razorpay.com"], // Allow framing from Razorpay
-      // Add other directives as needed
     }
   })
 );

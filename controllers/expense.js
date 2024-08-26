@@ -1,5 +1,4 @@
 const AWS = require('aws-sdk');
-const { format } = require('date-fns');
 const sequelize = require('../util/database');
 const Expense = require('../model/expenseDetail');
 const {stringify} = require('csv-stringify');
