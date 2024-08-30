@@ -11,17 +11,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const filterDropdown = document.querySelector("#filter-expensetype");
-
   // Initial fetch and display of expenses
   fetchAndDisplayExpenses();
 
   if (expenseForm) {
     expenseForm.addEventListener("submit", handleFormSubmit);
-  }
-
-  if (filterDropdown) {
-    filterDropdown.addEventListener("change", handleFilterChange);
   }
 
   function handleFormSubmit(event) {
@@ -57,20 +51,16 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .then((response) => {
       const { expenses, totalPages } = response.data;
+
       if (totalPages === undefined) {
         console.error("Total pages are undefined");
         return;
       }
 
-      const selectedType = filterDropdown.value;
-      const filteredExpenses = selectedType === "All"
-        ? expenses
-        : expenses.filter((expense) => expense.type === selectedType);
+      document.getElementById("ul").innerHTML = ""; // Clear existing expenses
+      expenses.forEach((expense) => addExpenseToUI(expense)); // Add each expense to UI
 
-      document.getElementById("ul").innerHTML = "";
-      filteredExpenses.forEach((expense) => addExpenseToUI(expense));
-
-      setupPagination(page, totalPages);
+      setupPagination(page, totalPages); // Set up pagination buttons
     })
     .catch((error) => {
       console.error("Error fetching expenses:", error.response ? error.response.data : error.message);
@@ -80,9 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setupPagination(currentPage, totalPages) {
     const paginationContainer = document.getElementById("pagination");
-
     paginationContainer.innerHTML = "";
-
+  
     if (totalPages > 1) {
       if (currentPage > 1) {
         const prevButton = document.createElement("button");
@@ -93,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         paginationContainer.appendChild(prevButton);
       }
-
+  
       for (let i = 1; i <= totalPages; i++) {
         const pageButton = document.createElement("button");
         pageButton.textContent = i;
@@ -104,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         paginationContainer.appendChild(pageButton);
       }
-
+  
       if (currentPage < totalPages) {
         const nextButton = document.createElement("button");
         nextButton.textContent = "Next";
@@ -116,11 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
-
-  function handleFilterChange() {
-    currentPage = 1; // Reset to first page on filter change
-    fetchAndDisplayExpenses();
-  }
+  
 
   function addExpenseToUI(expense) {
     const ul = document.getElementById("ul");

@@ -17,14 +17,6 @@ const ForgotPassword = sequelize.define('ForgotPassword', {
       isEmail: true,
     },
   },
-  resetToken: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  expiresAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,

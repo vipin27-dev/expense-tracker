@@ -21,7 +21,7 @@ const authenticateToken = async (req, res, next) => {
                 return res.sendStatus(403); // Forbidden
             }
 
-            req.userId = decoded.userId; // Set userId if available
+            req.userId = decoded.userId; 
             next();
         } catch (dbError) {
             console.error('Database error:', dbError.message);
